@@ -8,7 +8,7 @@ using Confluent.Kafka;
 var topic = Environment.GetEnvironmentVariable("TOPIC") ?? "jobs";
 var bootstrapServers = Environment.GetEnvironmentVariable("BOOTSTRAP_SERVERS") ?? "kafka:9092";
 
-const int INITIAL_MESSAGES = 1_000_000;
+const int INITIAL_MESSAGES = 50_000_000;
 const int BATCH_SIZE = 100_000;
 const int BATCH_COUNT = 5;
 

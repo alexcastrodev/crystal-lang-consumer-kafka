@@ -67,3 +67,33 @@ ruby-visit   |     1500000| 1499002|2999001|2025-11-26 22:41:46.000|2025-11-26 2
 - **Crystal is ~46% faster** than Ruby
 - Crystal processed the same amount of events in **7 seconds less**
 - **Throughput ratio**: Crystal is **1.46x faster**
+
+---
+
+## Time Summary - Processing ~50.5M events
+
+```bash
+event_type   |total_events|first_id|last_id  |first_event_time       |last_event_time        |first_created          |last_created           |
+-------------+------------+--------+---------+-----------------------+-----------------------+-----------------------+-----------------------+
+crystal-visit|    50500000|       1| 88421000|2024-11-27 22:51:17.266|2025-11-26 22:56:09.600|2025-11-26 22:51:19.709|2025-11-26 23:00:40.427|
+ruby-visit   |    50500000|  726001|101000000|2025-11-26 22:51:27.000|2025-11-26 23:03:50.000|2025-11-26 22:51:27.000|2025-11-26 23:03:50.000|
+```
+
+### Crystal Consumer
+- **Total events**: 50,500,000
+- **Processing time**: ~9 minutes 21 seconds (561 seconds)
+  - Start: 22:51:19
+  - End: 23:00:40
+- **Rate**: ~90,016 events/second
+
+### Ruby Consumer
+- **Total events**: 50,500,000
+- **Processing time**: ~12 minutes 23 seconds (743 seconds)
+  - Start: 22:51:27
+  - End: 23:03:50
+- **Rate**: ~67,970 events/second
+
+### Performance Comparison
+- **Crystal is ~32% faster** than Ruby
+- Crystal processed the same amount of events in **~3 minutes less**
+- **Throughput ratio**: Crystal is **1.32x faster**
