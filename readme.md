@@ -3,6 +3,7 @@
 It does not work on MacOS :(
 
 https://github.com/crystal-lang/crystal/issues/11761
+
 https://github.com/crystal-lang/distribution-scripts/issues/125
 
 # x86/64
