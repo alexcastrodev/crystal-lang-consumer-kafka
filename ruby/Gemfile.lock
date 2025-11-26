@@ -1,0 +1,24 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ffi (1.17.2-arm64-darwin)
+    mini_portile2 (2.8.9)
+    pg (1.6.2-arm64-darwin)
+    rake (13.3.1)
+    rdkafka (0.18.0)
+      ffi (~> 1.15)
+      mini_portile2 (~> 2.6)
+      rake (> 12)
+
+PLATFORMS
+  arm64-darwin-25
+
+DEPENDENCIES
+  pg (~> 1.5)
+  rdkafka (~> 0.18.0)
+
+RUBY VERSION
+   ruby 3.4.6p54
+
+BUNDLED WITH
+   2.7.2

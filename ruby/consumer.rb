@@ -9,10 +9,10 @@ logger = Logger.new(STDOUT)
 logger.level = Logger::INFO
 
 # Configuration
-KAFKA_BROKERS = ENV.fetch('KAFKA_BROKERS', 'kafka:9092')
+KAFKA_BROKERS = ENV.fetch('KAFKA_BROKERS', 'localhost:9092')
 KAFKA_TOPIC = ENV.fetch('KAFKA_TOPIC', 'jobs')
 GROUP_ID = ENV.fetch('KARAFKA_GROUP_ID', 'bench-group')
-DATABASE_URL = ENV.fetch('DATABASE_URL', 'postgres://bench:bench@postgres/bench')
+DATABASE_URL = ENV.fetch('DATABASE_URL', 'postgres://bench:bench@localhost/bench')
 BATCH_SIZE = ENV.fetch('KAFKA_BATCH_SIZE', '1000').to_i
 POLL_TIMEOUT_MS = ENV.fetch('KAFKA_POLL_MS', '50').to_i
 

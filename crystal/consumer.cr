@@ -37,7 +37,7 @@ module KafkaConsumer
       @poll_ms = ENV.fetch("KAFKA_POLL_MS", "50").to_i
       @batch_size = ENV.fetch("KAFKA_BATCH_SIZE", "1000").to_i
       @auto_offset_reset = ENV.fetch("KAFKA_AUTO_OFFSET_RESET", "earliest")
-      @db_url = ENV.fetch("DATABASE_URL", "postgres://bench:bench@postgres/bench")
+      @db_url = ENV.fetch("DATABASE_URL", "postgres://bench:bench@localhost/bench")
     end
 
     def display
