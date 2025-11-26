@@ -1,0 +1,12 @@
+name: kafka-consumer
+version: 1.0.0
+
+dependencies:
+  crafka:
+    github: BT-OpenSource/crafka
+  pg:
+    github: will/crystal-pg
+  db:
+    github: crystal-lang/crystal-db
+
+crystal: ">= 1.9.0"

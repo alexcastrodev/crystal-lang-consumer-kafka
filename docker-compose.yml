@@ -1,0 +1,118 @@
+services:
+  kafka:
+    image: apache/kafka:latest
+    hostname: kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,CONTROLLER://kafka:29093,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD", "/opt/kafka/bin/kafka-topics.sh", "--bootstrap-server", "kafka:9092", "--list"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: kafka-producer-csharp
+    environment:
+      BOOTSTRAP_SERVERS: kafka:29092
+      TOPIC: jobs
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    hostname: postgres
+    environment:
+      POSTGRES_USER: bench
+      POSTGRES_PASSWORD: bench
+      POSTGRES_DB: bench
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bench"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  setup:
+    image: apache/kafka:latest
+    container_name: kafka-setup
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: >
+      bash -c "
+      /opt/kafka/bin/kafka-topics.sh --create --if-not-exists --bootstrap-server kafka:29092 --topic jobs --partitions 1 --replication-factor 1 &&
+      echo 'Topic created successfully'
+      "
+    restart: "no"
+
+  consumer:
+    build:
+      context: ./crystal
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    container_name: kafka-consumer-crystal
+    environment:
+      KAFKA_BROKERS: kafka:29092
+      KAFKA_TOPIC: jobs
+      KARAFKA_GROUP_ID: bench-group
+      DATABASE_URL: postgres://bench:bench@postgres/bench
+      KAFKA_BATCH_SIZE: 1000
+      KAFKA_POLL_MS: 50
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  consumer-ruby:
+    build:
+      context: ./ruby
+      dockerfile: Dockerfile
+    container_name: kafka-consumer-ruby
+    environment:
+      KAFKA_BROKERS: kafka:29092
+      KAFKA_TOPIC: jobs
+      KARAFKA_GROUP_ID: bench-group-ruby
+      DATABASE_URL: postgres://bench:bench@postgres/bench
+      KAFKA_BATCH_SIZE: 1000
+      KAFKA_POLL_MS: 50
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy

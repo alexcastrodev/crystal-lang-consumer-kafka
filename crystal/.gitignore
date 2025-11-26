@@ -1,0 +1,26 @@
+# Crystal
+/lib/
+/.shards/
+*.dwarf
+consumer
+*.o
+*.a
+*.so
+*.dylib
+
+# Dependencies
+shard.lock
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
