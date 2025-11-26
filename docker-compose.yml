@@ -103,6 +103,7 @@ services:
     build:
       context: ./ruby
       dockerfile: Dockerfile
+    platform: linux/amd64
     container_name: kafka-consumer-ruby
     environment:
       KAFKA_BROKERS: kafka:29092
